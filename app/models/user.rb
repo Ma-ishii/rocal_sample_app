@@ -1,4 +1,8 @@
 class User < ApplicationRecord
+
+  #Userモデルへ関連付け追加
+  has_many :place, dependent: :destroy
+
   before_save { self.email = email.downcase }
   # 名前設定
   validates :name, presence: true, length: { maximum: 50 }
@@ -11,10 +15,15 @@ class User < ApplicationRecord
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
-  # 渡された文字列のハッシュ値を返す
-def User.digest(string)
-  cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
-                                                BCrypt::Engine.cost
-  BCrypt::Password.create(string, cost: cost)
-end
+    # 渡された文字列のハッシュ値を返す
+  def User.digest(string)
+    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
+                                                  BCrypt::Engine.cost
+    BCrypt::Password.create(string, cost: cost)
+  end
+
+  # 試作feedの定義
+  def feed
+      Place.where("user_id = ?", id)
+  end
 end
