@@ -4,8 +4,19 @@ class StaticPagesController < ApplicationController
     if logged_in?
       @place = current_user.place.build if logged_in?
       @feed_items = current_user.feed.paginate(page: params[:page])
-    #現在のURLを記憶
-    before_location root_path
+      #現在のURLを記憶
+      before_location root_path
+    else
+      # すべてのPlaceをGoogleMapに表示
+      @place = Place.all
+      @hash = Gmaps4rails.build_marker(@place) do |place, marker|
+        # 緯度経度が取得できているものだけMapに表示させる
+        if place.latitude && place.longitude
+          marker.lat place.latitude
+          marker.lng place.longitude
+          marker.infowindow place.name
+        end
+      end
     end
   end
 

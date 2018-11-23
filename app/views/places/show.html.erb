@@ -13,6 +13,19 @@
       <!-- アップロードPicture -->
       <%= image_tag @place.picture.url if @place.picture? %>
     </span>
+
+    <!-- GoogleMapのView -->
+    <% if( @place.latitude && @place.longitude ) %>
+    <div id="map" style='width: 640px; height: 320px;'></div>
+    <script type="text/javascript">
+      handler = Gmaps.build('Google');
+      handler.buildMap({ provider: {}, internal: {id: 'map'}}, function(){
+        markers = handler.addMarkers(<%=raw @hash.to_json %>);
+        handler.bounds.extendWith(markers);
+        handler.fitMapToBounds();
+        handler.getMap().setZoom(16);
+      });
+    </script>
     <!--戻るボタン-->
     <%= link_to "一覧へ戻る", redirect_before_url, class: "btn btn-sm btn-primary" %>
 </ul>
