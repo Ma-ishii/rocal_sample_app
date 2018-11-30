@@ -6,7 +6,7 @@ class Place < ApplicationRecord
   validates :name, presence: true, length: { maximum: 50 }
   validates :address, presence: true, length: { maximum: 140 }
 
-  geocoded_by :name
+  geocoded_by :address
   after_validation :geocode
 
   # デフォルトの順序付の設定

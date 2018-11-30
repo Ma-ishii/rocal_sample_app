@@ -6,11 +6,11 @@ class StaticPagesController < ApplicationController
       @feed_items = current_user.feed.paginate(page: params[:page])
       #現在のURLを記憶
       before_location root_path
-    else
-      # すべてのPlaceをGoogleMapに表示
-      @place = Place.all
-      @hash = Gmaps4rails.build_marker(@place) do |place, marker|
-        # 緯度経度が取得できているものだけMapに表示させる
+   else
+      #すべてのPlaceをGoogleMapに表示
+      @places = Place.all
+      @hash = Gmaps4rails.build_markers(@places) do |place, marker|
+        #緯度経度が取得できているものだけMapへ表示させる
         if place.latitude && place.longitude
           marker.lat place.latitude
           marker.lng place.longitude
@@ -27,5 +27,9 @@ class StaticPagesController < ApplicationController
   end
 
   def contact
+  end
+  
+  def unity
+    @places = Place.all
   end
 end
