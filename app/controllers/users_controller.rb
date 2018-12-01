@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
   before_action :logged_in_user, only: [:edit, :update]
   before_action :admin_user,     only: :destroy
+  protect_from_forgery except: :search # searchアクションを除外
 
   def index
     @users = User.paginate(page: params[:page])
@@ -48,10 +49,15 @@ class UsersController < ApplicationController
   redirect_to users_url
   end
 
+  def search
+    @products = Product.where('name LIKE(?)', "%#{params[:keyword]}%")
+    redirect_to 'index'
+  end
+
   private
 
-    def user_params
-      params.require(:user).permit(:name, :email, :password,
+  def user_params
+    params.require(:user).permit(:name, :email, :password,
                                    :password_confirmation)
   end
 
